@@ -81,16 +81,32 @@ For everything else (the full set of supported fields, defaults, validation rule
 
 ### Trigger a Buildkite build
 
-The pipeline is **`vllm/perf-eval`**. With no extra config, a build runs every workload that has `nightly: true`.
+The pipeline is [**`vllm/perf-eval`**](https://buildkite.com/vllm/perf-eval). With no extra config, a build runs every workload that has `nightly: true`.
 
 **From the UI:** open the pipeline → New Build → pick branch and commit (must be pushed to GitHub) → optionally fill Environment Variables to scope the run → Create Build.
 
-**Common env vars** to set on a build:
+**Required env vars** — both must be set on every build:
 
-- `WORKLOADS` — comma- or newline-separated list of workload paths or stems. Runs exactly those.
-- `VLLM_IMAGE` — full Docker image URI; overrides every workload's image.
-- `VLLM_COMMIT` — vLLM commit SHA; resolved as `vllm/vllm-openai:nightly-<sha>` unless `VLLM_IMAGE` is also set.
-- `BENCH_ONLY` — `true` to run only `vllm_bench` configs and skip `lm_eval` tasks.
+- `VLLM_COMMIT` — vLLM commit SHA being tested. Used to tag results and track which vLLM version produced them.
+- `VLLM_IMAGE` — full Docker image URI (e.g. `vllm/vllm-openai:nightly-abc1234`). This is the image that gets pulled and run.
+
+**Optional env vars:**
+
+- `WORKLOADS` — comma- or newline-separated list of workload paths or stems. Runs exactly those instead of the default `nightly: true` set.
+
+**Example — trigger a build from the Buildkite UI:**
+
+1. Open the `vllm/perf-eval` pipeline → **New Build**.
+2. Pick the branch and commit (must already be pushed to GitHub).
+3. Set the environment variables:
+   ```
+   VLLM_COMMIT=abc1234def5678
+   VLLM_IMAGE=vllm/vllm-openai:nightly-abc1234def5678
+   WORKLOADS=qwen3_5_h200
+   ```
+4. Click **Create Build**.
+
+This runs the `qwen3_5_h200` workload against the specified vLLM nightly image. Omit `WORKLOADS` to run all `nightly: true` workloads.
 
 **From an agent:** see `CLAUDE.md` for the Buildkite MCP workflow (don't shell out to `curl` or `bk`).
 
