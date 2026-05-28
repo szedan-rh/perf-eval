@@ -61,7 +61,7 @@ Use the Buildkite MCP tools — never shell out to `curl` or `bk`. Pipeline meta
    - `commit: "<full SHA>"`
    - `branch: "<branch name>"` (use the actual branch, not `main`, when testing a feature branch)
    - `message: "<short description of what this tests>"` — match the existing convention: short, action-oriented (e.g. "Add gpqa diamond", "Writable HF_HOME for lm_eval datasets cache"). No emoji unless the user asks.
-   - `environment`: always pass both `VLLM_COMMIT` (the vLLM SHA being tested) and `VLLM_IMAGE` (the full Docker image URI). Optionally pass `WORKLOADS` for an explicit workload list; omit it to run all `nightly: true` workloads.
+   - `environment`: always pass both `VLLM_COMMIT` (the vLLM SHA being tested) and `VLLM_IMAGE` (the full Docker image URI). Optionally pass `WORKLOADS` as a **comma-separated** list of workload stems (e.g. `"qwen3_5_h200,deepseek_v3_2_b200"`); omit it to run all `nightly: true` workloads. Do NOT use spaces to separate entries — the parser only splits on commas and newlines.
 3. **Report the build URL** back to the user immediately so they can follow along; the response includes `web_url`.
 
 ### Watching a running build
