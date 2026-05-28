@@ -20,6 +20,7 @@ Writes pipeline YAML to stdout for ``buildkite-agent pipeline upload``.
 
 import glob
 import os
+import re
 import sys
 
 import yaml
@@ -207,9 +208,7 @@ def make_step(path, data, profiles):
 def select_workloads(workloads):
     raw = (os.environ.get("WORKLOADS") or "").strip()
     if raw:
-        # Accept comma- or newline-separated. Each entry is a workload path
-        # (e.g. workloads/qwen3_5_h200.yaml) or a bare name (qwen3_5_h200).
-        entries = [e.strip() for e in raw.replace(",", "\n").split("\n") if e.strip()]
+        entries = [e.strip() for e in re.split(r"[,\s]+", raw) if e.strip()]
         by_path = {w["path"]: w for w in workloads}
         by_stem = {os.path.basename(w["path"]).removesuffix(".yaml"): w for w in workloads}
         selected = []
