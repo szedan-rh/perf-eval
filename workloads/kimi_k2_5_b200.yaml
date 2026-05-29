@@ -1,20 +1,24 @@
-# Kimi-K2.5 on B200
+# Kimi-K2.5 NVFP4 on B200 (TP=8, Eagle3 speculative)
+# Recipe: https://recipes.vllm.ai/nvidia/Kimi-K2.5-NVFP4
 name: kimi_k2_5-b200
 gpu: B200
 num_gpus: 8
 nightly: true
 
 vllm:
-  model: moonshotai/Kimi-K2.5
+  model: nvidia/Kimi-K2.5-NVFP4
   serve_args: >-
-    --tensor-parallel-size 8
-    --kv-cache-dtype fp8
-    --block-size 256
-    --mm-encoder-tp-mode data
-    --tool-call-parser kimi_k2
-    --reasoning-parser kimi_k2
-    --enable-auto-tool-choice
     --trust-remote-code
+    --kv-cache-dtype fp8
+    --tensor-parallel-size 8
+    --attention-config.use_trtllm_ragged_deepseek_prefill=True
+    --tool-call-parser kimi_k2
+    --enable-auto-tool-choice
+    --reasoning-parser kimi_k2
+    --speculative-config '{"model":"lightseekorg/kimi-k2.5-eagle3-mla","method":"eagle3","num_speculative_tokens":3}'
+    --mm-encoder-tp-mode data
+  env:
+    VLLM_USE_FLASHINFER_MOE_FP4: "1"
 
 lm_eval:
   model_args:

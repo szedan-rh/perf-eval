@@ -1,25 +1,24 @@
-# DeepSeek-V3.2 on B200 (TP=2 × DP=4 + EP, deep_gemm)
+# DeepSeek-V3.2 NVFP4 on B200 (TP=8, FLASHINFER_MLA)
+# Recipe: https://recipes.vllm.ai/nvidia/DeepSeek-V3.2-NVFP4
 name: deepseek_v3_2-b200
 gpu: B200
 num_gpus: 8
 nightly: true
 
 vllm:
-  model: deepseek-ai/DeepSeek-V3.2
+  model: nvidia/DeepSeek-V3.2-NVFP4
   serve_args: >-
-    --tensor-parallel-size 2
-    --data-parallel-size 4
-    --enable-expert-parallel
-    --max-model-len 32768
+    --trust-remote-code
+    --kernel-config.enable_flashinfer_autotune=False
     --kv-cache-dtype fp8
-    --block-size 256
-    --moe-backend deep_gemm
-    --attention_config.use_fp4_indexer_cache=True
+    --tensor-parallel-size 8
+    --attention-backend FLASHINFER_MLA
     --tokenizer-mode deepseek_v32
     --tool-call-parser deepseek_v32
-    --reasoning-parser deepseek_v3
     --enable-auto-tool-choice
-    --trust-remote-code
+    --reasoning-parser deepseek_v3
+  env:
+    VLLM_USE_FLASHINFER_MOE_FP4: "1"
 
 lm_eval:
   model_args:
