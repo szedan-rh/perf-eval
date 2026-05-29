@@ -1,4 +1,4 @@
-# MiniMax-M2.5 on B200 (TP=4 + EP, deep_gemm_mega_moe)
+# MiniMax-M2.5 on B200 (TP=4 + EP, deep_gemm)
 name: minimax_m2_5-b200
 gpu: B200
 num_gpus: 8
@@ -11,7 +11,7 @@ vllm:
     --enable-expert-parallel
     --kv-cache-dtype fp8
     --block-size 256
-    --moe-backend deep_gemm_mega_moe
+    --moe-backend deep_gemm
     --tool-call-parser minimax_m2
     --reasoning-parser minimax_m2
     --enable-auto-tool-choice

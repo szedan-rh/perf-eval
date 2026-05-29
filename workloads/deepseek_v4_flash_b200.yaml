@@ -1,4 +1,4 @@
-# DeepSeek-V4-Flash on B200 (TP=2 × DP=4 + EP, deep_gemm_mega_moe, MTP spec-decode)
+# DeepSeek-V4-Flash on B200 (TP=2 × DP=4 + EP, deep_gemm, MTP spec-decode)
 name: deepseek_v4_flash-b200
 gpu: B200
 num_gpus: 8
@@ -13,7 +13,7 @@ vllm:
     --max-model-len 32768
     --kv-cache-dtype fp8
     --block-size 256
-    --moe-backend deep_gemm_mega_moe
+    --moe-backend deep_gemm
     --attention_config.use_fp4_indexer_cache=True
     --tokenizer-mode deepseek_v4
     --tool-call-parser deepseek_v4

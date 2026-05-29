@@ -1,4 +1,4 @@
-# DeepSeek-V4-Pro on B200 (DP=8 + EP, deep_gemm_mega_moe)
+# DeepSeek-V4-Pro on B200 (DP=8 + EP, deep_gemm)
 name: deepseek_v4_pro-b200
 gpu: B200
 num_gpus: 8
@@ -14,7 +14,7 @@ vllm:
     --max-num-batched-tokens 512
     --kv-cache-dtype fp8
     --block-size 256
-    --moe-backend deep_gemm_mega_moe
+    --moe-backend deep_gemm
     --attention_config.use_fp4_indexer_cache=True
     --tokenizer-mode deepseek_v4
     --gpu-memory-utilization 0.95

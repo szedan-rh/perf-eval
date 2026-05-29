@@ -14,7 +14,7 @@ vllm:
     --max-model-len 32768
     --kv-cache-dtype fp8
     --block-size 256
-    --moe-backend deep_gemm_mega_moe
+    --moe-backend deep_gemm
     --speculative-config.method mtp
     --speculative-config.num_speculative_tokens 5
     --trust-remote-code
