@@ -11,7 +11,7 @@ vllm:
     --trust-remote-code
     --kv-cache-dtype fp8
     --tensor-parallel-size 8
-    --attention-config.use_trtllm_ragged_deepseek_prefill=True
+    --attention-config.mla_prefill_backend=TRTLLM_RAGGED
     --tool-call-parser kimi_k2
     --enable-auto-tool-choice
     --reasoning-parser kimi_k2
