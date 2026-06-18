@@ -2,17 +2,20 @@
 name: deepseek_v4_flash-b200
 gpu: B200
 num_gpus: 8
-# Parked: the vLLM release image ships a mismatched nvidia-cu13 toolchain
-# (nvcc/cccl vs cuda runtime headers), so the DeepSeek-V4 mHC TileLang kernel
-# fails to JIT-compile at engine startup on sm_100a ("CUDA compiler and CUDA
-# toolkit headers are incompatible"). There is no runtime/serve-arg workaround
-# (MHCPreOp.forward_cuda hardcodes the tilelang op). Re-enable once a vLLM image
-# with an aligned cu13 toolchain ships. See vllm-project/vllm#44305.
-# Still triggerable explicitly via the WORKLOADS env var.
-nightly: false
+nightly: true
 
 vllm:
   model: deepseek-ai/DeepSeek-V4-Flash
+  env:
+    # The vLLM release image's nvidia-cu13 wheels are minor-skewed (nvcc minor
+    # != cudart-headers minor, both CUDA 13), so the DeepSeek-V4 mHC TileLang
+    # kernel's sm_100a JIT compile trips CCCL's nvcc-vs-headers guard ("CUDA
+    # compiler and CUDA toolkit headers are incompatible"). nvcc honors
+    # NVCC_APPEND_FLAGS and TileLang's compile subprocess inherits the env, so
+    # define CCCL's official opt-out to skip the (same-major) check.
+    # Drop this once the image ships version-aligned cu13 wheels.
+    # See vllm-project/vllm#44305.
+    NVCC_APPEND_FLAGS: "-DCCCL_DISABLE_CTK_COMPATIBILITY_CHECK"
   serve_args: >-
     --trust-remote-code
     --kv-cache-dtype fp8
